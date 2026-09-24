@@ -1,0 +1,245 @@
+// 门店管理页面共用样式（全部以 esc- 开头，颜色取 Element Plus 变量以兼容深色模式）
+
+// 收款渠道颜色：图表与数字卡片共用（已按色觉辨识校验，深色模式用各自的深色档）
+:root {
+  --esc-wechat: #1baf7a;
+  --esc-alipay: #2a78d6;
+  --esc-cash: #eb6834;
+}
+
+html.dark {
+  --esc-wechat: #199e70;
+  --esc-alipay: #3987e5;
+  --esc-cash: #d95926;
+}
+
+// 深色模式：若依把主题色的浅色档（按浅色背景算的）写在根元素上，深色背景下标签、卡片底色会变成白块。
+// 这里按 Element Plus 深色主题的算法（主题色与深色底按比例混合）重算背景、边框用到的几档；文字用的浅色档不动。
+html.dark body {
+  --el-color-primary-light-5: color-mix(in srgb, var(--el-color-primary) 50%, #141414);
+  --el-color-primary-light-7: color-mix(in srgb, var(--el-color-primary) 30%, #141414);
+  --el-color-primary-light-8: color-mix(in srgb, var(--el-color-primary) 20%, #141414);
+  --el-color-primary-light-9: color-mix(in srgb, var(--el-color-primary) 10%, #141414);
+}
+
+.esc-page {
+  // 顶部状态页签与筛选区之间的距离
+  .esc-tabs {
+    margin-bottom: 4px;
+
+    .el-tabs__header {
+      margin-bottom: 14px;
+    }
+  }
+
+  .el-form--inline .el-form-item {
+    margin-right: 14px;
+  }
+
+  // 日期范围选择器在行内表单里保持固定宽度
+  .el-form--inline .el-date-editor.el-input__wrapper,
+  .el-form--inline .el-date-editor--daterange {
+    width: 250px;
+  }
+
+  // 表格单元格左右留白收窄一些，1280 宽的屏幕上列表不用横向滚动
+  .el-table {
+    --el-table-header-text-color: var(--el-text-color-regular);
+
+    .cell {
+      line-height: 20px;
+      padding: 0 8px;
+    }
+
+    .el-table__cell:first-child .cell {
+      padding-left: 12px;
+    }
+
+    .el-table__cell:last-child .cell {
+      padding-right: 12px;
+    }
+
+    .el-table-column--selection .cell {
+      padding: 0 8px !important;
+    }
+  }
+}
+
+// 列表上方的操作栏：左边是主要按钮，右边是说明或刷新
+.esc-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+
+  .esc-toolbar__left,
+  .esc-toolbar__right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    // v-hasPermi 移除按钮后，相邻按钮的默认间距交给 gap 处理
+    .el-button + .el-button {
+      margin-left: 0;
+    }
+  }
+}
+
+.esc-hint {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--el-text-color-secondary);
+}
+
+.esc-muted {
+  color: var(--el-text-color-secondary);
+}
+
+.esc-placeholder {
+  color: var(--el-text-color-placeholder);
+}
+
+.esc-num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.esc-plus {
+  color: var(--el-color-success);
+  font-weight: 600;
+}
+
+.esc-minus {
+  color: var(--el-color-danger);
+  font-weight: 600;
+}
+
+.esc-strike {
+  text-decoration: line-through;
+  color: var(--el-text-color-placeholder);
+}
+
+// 表格里的「主文字 + 下方小字」
+.esc-cell-main {
+  color: var(--el-text-color-primary);
+}
+
+.esc-cell-sub {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--el-text-color-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.esc-link-cell {
+  cursor: pointer;
+}
+
+// 表格里的一组操作按钮
+.esc-row-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2px 10px;
+
+  .el-button + .el-button {
+    margin-left: 0;
+  }
+}
+
+// 卡片面板
+.esc-card {
+  background: var(--el-bg-color-overlay);
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 8px;
+  padding: 16px 18px;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.esc-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  min-height: 24px;
+}
+
+.esc-card__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.esc-card__extra {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  white-space: nowrap;
+}
+
+// 数字小卡片
+.esc-stat-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+// 弹窗里的说明条
+.esc-dialog-tip {
+  margin-bottom: 16px;
+}
+
+.esc-form-help {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--el-text-color-secondary);
+  margin-top: 4px;
+}
+
+// 详情抽屉的小节
+.esc-section {
+  margin-bottom: 22px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.esc-section__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+  margin-bottom: 10px;
+  padding-left: 8px;
+  border-left: 3px solid var(--el-color-primary);
+  line-height: 18px;
+
+  .esc-section__extra {
+    font-size: 12px;
+    font-weight: normal;
+    color: var(--el-text-color-secondary);
+  }
+}
+
+// 一次性显示的密码
+.esc-secret {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--el-text-color-primary);
+}

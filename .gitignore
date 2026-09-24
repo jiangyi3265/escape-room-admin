@@ -30,6 +30,8 @@ logs/
 *.bak
 __pycache__/
 *.pyc
+# Test output
+tests/screenshots/
 # Local configuration, credentials and business exports
 .env
 .env.*

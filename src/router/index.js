@@ -67,7 +67,7 @@ export const constantRoutes = [
         path: '/index',
         component: () => import('@/views/index'),
         name: 'Index',
-        meta: { title: '首页', icon: 'dashboard', affix: false }
+        meta: { title: '门店概览', icon: 'dashboard', affix: false }
       }
     ]
   },

@@ -10,9 +10,9 @@ export default {
   sideTheme: 'theme-dark',
 
   /**
-   * 是否系统布局配置
+   * 是否系统布局配置（操作员用不到，面板里多是技术用语，默认隐藏）
    */
-  showSettings: true,
+  showSettings: false,
 
   /**
    * 菜单导航模式 1、纯左侧 2、混合（左侧+顶部） 3、纯顶部
@@ -52,6 +52,6 @@ export default {
   /**
    * 底部版权文本内容
    */
-  footerContent: 'Copyright © 2018-2026 RuoYi. All Rights Reserved.'
+  footerContent: `© ${new Date().getFullYear()} 零零谷门店`
 }
 

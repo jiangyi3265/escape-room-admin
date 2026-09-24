@@ -2,12 +2,28 @@ import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
 import createVitePlugins from './vite/plugins'
 
-const baseUrl = 'http://localhost:8080' // 后端接口
+// 本机开发配置的默认值；可在 .env.development 里用 VITE_DEV_PORT / VITE_PROXY_TARGET / VITE_OPEN_BROWSER 覆盖
+const DEFAULT_DEV_PORT = 80
+const DEFAULT_PROXY_TARGET = 'http://localhost:8080'
+
+function readPort(value, fallback) {
+  const port = Number.parseInt(String(value ?? '').trim(), 10)
+  return Number.isInteger(port) && port > 0 && port < 65536 ? port : fallback
+}
+
+function readFlag(value, fallback) {
+  const text = String(value ?? '').trim().toLowerCase()
+  if (!text) return fallback
+  return !['false', '0', 'no', 'off'].includes(text)
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd())
   const { VITE_APP_ENV } = env
+  const devPort = readPort(env.VITE_DEV_PORT, DEFAULT_DEV_PORT)
+  const baseUrl = (env.VITE_PROXY_TARGET || '').trim() || DEFAULT_PROXY_TARGET // 后端接口
+  const openBrowser = readFlag(env.VITE_OPEN_BROWSER, true)
   return {
     // 部署生产环境和开发环境下的URL。
     // 默认情况下，vite 会假设你的应用是被部署在一个域名的根路径上
@@ -42,9 +58,9 @@ export default defineConfig(({ mode, command }) => {
     },
     // vite 相关配置
     server: {
-      port: 80,
+      port: devPort,
       host: true,
-      open: true,
+      open: openBrowser,
       proxy: {
         // https://cn.vitejs.dev/config/#server-proxy
         '/dev-api': {

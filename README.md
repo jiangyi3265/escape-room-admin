@@ -1,12 +1,17 @@
 # escape-room-admin
 
-密室逃脱门店项目的 Web 管理后台，提供账号、角色权限及系统运维管理界面。
+密室逃脱门店项目的 Web 管理后台，提供门店运营页面，以及账号、角色权限及系统运维管理界面。
 
 ## 项目简介
 
-基于若依 Vue 3 管理端，现有页面涵盖用户、角色、菜单、部门、岗位、字典、参数配置、公告、操作日志、登录日志、在线用户、服务监控和缓存监控。使用 Axios 调用 `escape-room-backend`，结合动态路由与权限指令控制菜单和按钮访问。
+基于若依 Vue 3 管理端。门店运营页面（`src/views/escape/`，调用后端 `/escape/**`）面向不懂技术的操作员：
 
-目前没有门店订单、积分或收款专用管理页面。源码保留定时任务、代码生成等页面，但对应后端模块默认未启用，使用前需完成模块配置。
+- 门店概览（首页）：今日收款、待办、近 7 日收款图表、订单现场、积分排行、最近消息，每 30 秒自动刷新
+- 订单与收款：订单管理（详情抽屉里可代为推进流程、登记/修改收款、修正节点、取消、删除）、收款台账（明细、合计、每日汇总）
+- 积分与任务：打扫审核、积分明细（调整、撤销）、临时任务、积分任务设置
+- 门店管理：员工管理、主题管理、维修登记、门店消息、操作记录、门店设置
+
+菜单与按钮权限来自后端 `sys_menu`（`escape:*` 权限）。若依原有的用户、角色、菜单、字典、监控等页面源码仍保留；源码里的定时任务、代码生成等页面对应的后端模块默认未启用，使用前需完成模块配置。
 
 ## 技术栈
 
@@ -23,7 +28,7 @@
 | escape-room-admin | Web 管理后台 | [escape-room-admin](https://github.com/jiangyi3265/escape-room-admin) |
 | escape-room-app | 门店员工与店长端 | [escape-room-app](https://github.com/jiangyi3265/escape-room-app) |
 
-三个仓库属于密室逃脱门店项目。当前后台使用后端的系统管理 API；门店端的订单、积分与收款业务使用本地存储，尚未接入该 Java 后端，微信订阅通知另有云函数支持。
+三个仓库属于密室逃脱门店项目。当前后台的门店运营页面使用后端 `/escape/**`，系统管理页面使用若依的系统管理 API；门店端的对接情况以 escape-room-app 仓库说明为准，微信订阅通知另有云函数支持。
 
 ## 快速启动
 
@@ -37,7 +42,7 @@ cp .env.staging.example .env.staging
 npm run dev
 ```
 
-Windows PowerShell 可用 `Copy-Item` 复制文件；若本地环境文件已经存在则保留原配置。开发服务器默认端口 `80`，`/dev-api` 由 `vite.config.js` 转发至 `http://localhost:8080`。若端口被占用，可执行 `npm run dev -- --port 5173`。
+Windows PowerShell 可用 `Copy-Item` 复制文件；若本地环境文件已经存在则保留原配置。开发服务器配置写在 `.env.development`：`VITE_DEV_PORT`（端口，默认 `80`）、`VITE_PROXY_TARGET`（`/dev-api` 转发到的后端地址，默认 `http://localhost:8080`）、`VITE_OPEN_BROWSER`（启动时是否打开浏览器，默认 `true`）。也可临时指定端口：`npm run dev -- --port 5173`。
 
 `VITE_APP_TITLE` 设置标题，`VITE_APP_BASE_API` 设置 API 路径。生产与预发布使用 `/prod-api`、`/stage-api`，部署服务器需配置反向代理。所有 `VITE_*` 值会进入前端构建产物，不能填写服务端密码或私钥。
 
@@ -52,8 +57,9 @@ npm run preview
 ## 项目结构
 
 ```text
-src/api/          登录、系统管理及监控接口
-src/views/        系统管理、监控、登录与工具页面
+src/api/          登录、系统管理及监控接口；escape/ 为门店运营接口
+src/views/        系统管理、监控、登录与工具页面；index.vue 为门店概览
+src/views/escape/ 门店运营页面、共用组件（components/）与共用工具（shared.js、escape.scss）
 src/router/       路由定义
 src/store/        Pinia 用户、权限、字典和界面状态
 src/layout/       导航、侧栏、标签栏和主布局
@@ -62,7 +68,18 @@ src/directive/    角色与权限指令
 src/utils/        请求、认证、校验及通用工具
 vite/plugins/     构建插件
 public/           公共静态资源
+tests/            界面验收脚本（截图输出到 tests/screenshots/，不入库）
 ```
+
+## 界面验收
+
+需要后端（默认 `http://127.0.0.1:8087`）、开发服务器（默认 `http://127.0.0.1:8097`）和本机 Redis（读取登录验证码），并使用全局安装的 Playwright 与系统 Edge：
+
+```bash
+node tests/admin-ui.mjs          # HEADED=1 可看到浏览器操作过程
+```
+
+脚本通过登录页登录，逐页检查表头、控制台错误和界面文案，并实际操作发通知、主题增删、临时任务发布与取消、订单代推进与收款等；测试数据带时间戳，可重复运行。
 
 ## 简历描述示例
 
